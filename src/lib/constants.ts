@@ -27,3 +27,6 @@ export const CODE_GEN_DEBOUNCE_MS = 100;
 export const BATCH_SIZE = 20;
 
 export const STORAGE_KEY = 'qr-barcode-config';
+
+export const BASE_URL =
+  process.env.NEXT_PUBLIC_BASE_URL || 'https://qr-code-crisgp1s-projects.vercel.app';
