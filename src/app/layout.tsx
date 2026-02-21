@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Analytics } from '@vercel/analytics/next';
 import { BASE_URL } from '@/lib/constants';
 import './globals.css';
 import { Providers } from './providers';
@@ -87,6 +88,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <body className="bg-[var(--surface)] text-[var(--text-primary)] antialiased">
         <Providers>{children}</Providers>
+        <Analytics />
       </body>
     </html>
   );
