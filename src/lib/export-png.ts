@@ -64,7 +64,8 @@ export function exportPNG(config: AppConfig): void {
     });
 
     canvas.toBlob((blob) => {
-      if (blob) downloadBlob(blob, `QR_Sheet_${idx + 1}.png`);
+      const filename = config.outputFilename || 'QR_Sheet';
+      if (blob) downloadBlob(blob, `${filename}_${idx + 1}.png`);
     }, 'image/png');
   });
 }

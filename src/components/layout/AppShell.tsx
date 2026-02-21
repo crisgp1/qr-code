@@ -11,7 +11,6 @@ import { useViewMode } from '@/hooks/useViewMode';
 import { useStorage } from '@/hooks/useStorage';
 import { useExport } from '@/hooks/useExport';
 import { getPagesData, getNumPages } from '@/lib/page-calculator';
-import { exportWord } from '@/lib/export-word';
 import { exportPNG } from '@/lib/export-png';
 import { exportSinglePNG, exportSingleSVG } from '@/lib/export-single';
 import { encodeContent } from '@/lib/qr-engine';
@@ -63,10 +62,6 @@ export function AppShell() {
     exportPDF(effectiveConfig, codeDataURLs, interleave);
   }, [effectiveConfig, codeDataURLs, interleave, exportPDF]);
 
-  const handleWord = useCallback(() => {
-    exportWord(effectiveConfig, codeDataURLs, interleave);
-  }, [effectiveConfig, codeDataURLs, interleave]);
-
   const handlePNG = useCallback(() => {
     exportPNG(effectiveConfig);
   }, [effectiveConfig]);
@@ -82,6 +77,10 @@ export function AppShell() {
   const handleSave = useCallback(() => {
     save(config);
   }, [save, config]);
+
+  const handleReset = useCallback(() => {
+    dispatch({ type: 'RESET' });
+  }, [dispatch]);
 
   return (
     <div className="flex h-[100dvh] overflow-hidden">
@@ -102,12 +101,12 @@ export function AppShell() {
         onLogoRemove={removeLogo}
         pdfLoading={pdfLoading}
         onPDF={handlePDF}
-        onWord={handleWord}
         onPNG={handlePNG}
         onSinglePNG={handleSinglePNG}
         onSingleSVG={handleSingleSVG}
         onSave={handleSave}
         onLoad={load}
+        onReset={handleReset}
         saveMessage={saveMessage}
       />
       <div className="flex-1 flex flex-col overflow-hidden">
@@ -126,6 +125,8 @@ export function AppShell() {
           onPrev={prevPage}
           onNext={nextPage}
           onViewModeChange={setViewMode}
+          onDownloadPNG={handleSinglePNG}
+          onDownloadSVG={handleSingleSVG}
         />
       </div>
     </div>

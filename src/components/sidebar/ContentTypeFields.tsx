@@ -1,45 +1,70 @@
 'use client';
 
+import { Lightning } from '@phosphor-icons/react';
 import { useI18n } from '@/i18n';
 import type { ContentConfig } from '@/types/config';
+import { getAutoFillData } from '@/lib/autofill';
 import { Field, TextInput, Select, Toggle } from '../shared';
 
 interface ContentTypeFieldsProps {
   content: ContentConfig;
   onContentChange: (field: keyof ContentConfig, value: ContentConfig[keyof ContentConfig]) => void;
   onNestedChange: (parent: 'wifi' | 'vcard' | 'email' | 'sms', field: string, value: unknown) => void;
+  onAutoFill?: (data: Partial<ContentConfig>) => void;
 }
 
-export function ContentTypeFields({ content, onContentChange, onNestedChange }: ContentTypeFieldsProps) {
+export function ContentTypeFields({ content, onContentChange, onNestedChange, onAutoFill }: ContentTypeFieldsProps) {
   const { t } = useI18n();
+
+  const handleAutoFill = () => {
+    const data = getAutoFillData(content.type);
+    if (onAutoFill) onAutoFill(data);
+  };
+
+  const autoFillButton = (
+    <button
+      onClick={handleAutoFill}
+      className="flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-[var(--accent)] hover:bg-[var(--accent)]/10 rounded-md transition-colors"
+    >
+      <Lightning size={12} weight="bold" />
+      {t.content.autoFill}
+    </button>
+  );
 
   switch (content.type) {
     case 'url':
       return (
-        <Field label={t.contentType.url}>
-          <TextInput
-            value={content.value}
-            onChange={(v) => onContentChange('value', v)}
-            placeholder={t.content.urlPlaceholder}
-          />
-        </Field>
+        <div className="flex flex-col gap-2">
+          <div className="flex justify-end">{autoFillButton}</div>
+          <Field label={t.contentType.url}>
+            <TextInput
+              value={content.value}
+              onChange={(v) => onContentChange('value', v)}
+              placeholder={t.content.urlPlaceholder}
+            />
+          </Field>
+        </div>
       );
 
     case 'text':
       return (
-        <Field label={t.contentType.text}>
-          <TextInput
-            value={content.value}
-            onChange={(v) => onContentChange('value', v)}
-            placeholder={t.content.textPlaceholder}
-            multiline
-          />
-        </Field>
+        <div className="flex flex-col gap-2">
+          <div className="flex justify-end">{autoFillButton}</div>
+          <Field label={t.contentType.text}>
+            <TextInput
+              value={content.value}
+              onChange={(v) => onContentChange('value', v)}
+              placeholder={t.content.textPlaceholder}
+              multiline
+            />
+          </Field>
+        </div>
       );
 
     case 'email':
       return (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
+          <div className="flex justify-end">{autoFillButton}</div>
           <Field label={t.content.emailTo}>
             <TextInput value={content.email.to} onChange={(v) => onNestedChange('email', 'to', v)} placeholder="user@example.com" />
           </Field>
@@ -54,14 +79,18 @@ export function ContentTypeFields({ content, onContentChange, onNestedChange }: 
 
     case 'phone':
       return (
-        <Field label={t.content.phoneNumber}>
-          <TextInput value={content.phone} onChange={(v) => onContentChange('phone', v)} placeholder="+1234567890" />
-        </Field>
+        <div className="flex flex-col gap-2">
+          <div className="flex justify-end">{autoFillButton}</div>
+          <Field label={t.content.phoneNumber}>
+            <TextInput value={content.phone} onChange={(v) => onContentChange('phone', v)} placeholder="+1234567890" />
+          </Field>
+        </div>
       );
 
     case 'sms':
       return (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
+          <div className="flex justify-end">{autoFillButton}</div>
           <Field label={t.content.smsNumber}>
             <TextInput value={content.sms.number} onChange={(v) => onNestedChange('sms', 'number', v)} placeholder="+1234567890" />
           </Field>
@@ -73,7 +102,8 @@ export function ContentTypeFields({ content, onContentChange, onNestedChange }: 
 
     case 'wifi':
       return (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
+          <div className="flex justify-end">{autoFillButton}</div>
           <Field label={t.content.wifiSSID}>
             <TextInput value={content.wifi.ssid} onChange={(v) => onNestedChange('wifi', 'ssid', v)} />
           </Field>
@@ -86,7 +116,7 @@ export function ContentTypeFields({ content, onContentChange, onNestedChange }: 
               options={[
                 { label: 'WPA/WPA2', value: 'WPA' },
                 { label: 'WEP', value: 'WEP' },
-                { label: 'None', value: 'nopass' },
+                { label: t.content.wifiEncNone, value: 'nopass' },
               ]}
               onChange={(v) => onNestedChange('wifi', 'encryption', v)}
             />
@@ -101,8 +131,9 @@ export function ContentTypeFields({ content, onContentChange, onNestedChange }: 
 
     case 'vcard':
       return (
-        <div className="flex flex-col gap-2">
-          <div className="grid grid-cols-2 gap-2">
+        <div className="flex flex-col gap-3">
+          <div className="flex justify-end">{autoFillButton}</div>
+          <div className="grid grid-cols-2 gap-3">
             <Field label={t.content.vcardFirstName}>
               <TextInput value={content.vcard.firstName} onChange={(v) => onNestedChange('vcard', 'firstName', v)} />
             </Field>

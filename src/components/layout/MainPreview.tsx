@@ -1,7 +1,7 @@
 'use client';
 
 import type { AppConfig, ViewMode } from '@/types/config';
-import { GridFour, File } from '@phosphor-icons/react';
+import { GridFour, File, QrCode } from '@phosphor-icons/react';
 import { useI18n } from '@/i18n';
 import { PreviewContainer } from '../preview/PreviewContainer';
 import { Spinner } from '../shared';
@@ -16,6 +16,8 @@ interface MainPreviewProps {
   onPrev: () => void;
   onNext: () => void;
   onViewModeChange: (mode: ViewMode) => void;
+  onDownloadPNG: () => void;
+  onDownloadSVG: () => void;
 }
 
 export function MainPreview({
@@ -28,48 +30,36 @@ export function MainPreview({
   onPrev,
   onNext,
   onViewModeChange,
+  onDownloadPNG,
+  onDownloadSVG,
 }: MainPreviewProps) {
   const { t } = useI18n();
-  const multiPage = pagesData.length > 1;
 
-  // When only 1 page, always force single-page view
-  const activeView: ViewMode = multiPage ? viewMode : 'single';
+  const viewButtons: { mode: ViewMode; icon: React.ReactNode; label: string }[] = [
+    { mode: 'singleCode', icon: <QrCode size={14} weight="bold" />, label: t.view.singleCode },
+    { mode: 'single', icon: <File size={14} weight="bold" />, label: t.view.singlePage },
+    { mode: 'grid', icon: <GridFour size={14} weight="bold" />, label: t.view.grid },
+  ];
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden print-area">
-      {/* Toolbar — toggle only visible with 2+ pages */}
+      {/* Toolbar — always visible */}
       <div className="flex items-center justify-between px-4 py-2 border-b border-[var(--sidebar-border)] bg-[var(--sidebar-bg)] no-print">
-        <div className="flex items-center gap-2">
-          {multiPage ? (
-            <>
-              <button
-                onClick={() => onViewModeChange('single')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  activeView === 'single'
-                    ? 'bg-[var(--accent)] text-white'
-                    : 'text-[var(--text-secondary)] hover:bg-gray-100 dark:hover:bg-gray-700'
-                }`}
-              >
-                <File size={14} weight="bold" />
-                {t.view.singlePage}
-              </button>
-              <button
-                onClick={() => onViewModeChange('grid')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  activeView === 'grid'
-                    ? 'bg-[var(--accent)] text-white'
-                    : 'text-[var(--text-secondary)] hover:bg-gray-100 dark:hover:bg-gray-700'
-                }`}
-              >
-                <GridFour size={14} weight="bold" />
-                {t.view.grid}
-              </button>
-            </>
-          ) : (
-            <span className="text-xs font-semibold text-[var(--text-secondary)]">
-              {t.view.page} 1
-            </span>
-          )}
+        <div className="flex items-center gap-1">
+          {viewButtons.map((btn) => (
+            <button
+              key={btn.mode}
+              onClick={() => onViewModeChange(btn.mode)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                viewMode === btn.mode
+                  ? 'bg-[var(--accent)] text-white'
+                  : 'text-[var(--text-secondary)] hover:bg-gray-100 dark:hover:bg-gray-700'
+              }`}
+            >
+              {btn.icon}
+              {btn.label}
+            </button>
+          ))}
         </div>
         {isGenerating && (
           <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
@@ -84,10 +74,12 @@ export function MainPreview({
           config={config}
           pagesData={pagesData}
           codeDataURLs={codeDataURLs}
-          viewMode={activeView}
+          viewMode={viewMode}
           currentPage={currentPage}
           onPrev={onPrev}
           onNext={onNext}
+          onDownloadPNG={onDownloadPNG}
+          onDownloadSVG={onDownloadSVG}
         />
       </div>
     </div>

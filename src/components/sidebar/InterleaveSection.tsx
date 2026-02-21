@@ -48,7 +48,7 @@ export function InterleaveSection({
   };
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-3">
       <Select
         value={interleave.mode}
         options={modeOptions}
@@ -77,7 +77,7 @@ export function InterleaveSection({
 
       {interleave.mode === 'csv' && (
         <>
-          <label className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold bg-gray-100 dark:bg-gray-700 text-[var(--text-secondary)] hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer transition-all">
+          <label className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-sm font-semibold bg-gray-100 dark:bg-gray-700 text-[var(--text-secondary)] hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer transition-all">
             <UploadSimple size={16} weight="bold" />
             {interleave.csvFileName || t.interleave.csvUpload}
             <input

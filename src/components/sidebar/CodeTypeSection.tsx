@@ -13,13 +13,13 @@ export function CodeTypeSection({ codeMode, onChange }: CodeTypeSectionProps) {
   const { t } = useI18n();
 
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2.5 p-1 bg-gray-100 dark:bg-gray-800 rounded-xl">
       <button
         onClick={() => onChange('qr')}
-        className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+        className={`flex-1 flex items-center justify-center gap-2 px-3 py-3 rounded-lg text-sm font-semibold transition-all ${
           codeMode === 'qr'
-            ? 'bg-[var(--accent)] text-white'
-            : 'bg-gray-100 dark:bg-gray-700 text-[var(--text-secondary)] hover:bg-gray-200 dark:hover:bg-gray-600'
+            ? 'bg-[var(--accent)] text-white shadow-sm'
+            : 'text-[var(--text-secondary)] hover:bg-white/60 dark:hover:bg-gray-700'
         }`}
       >
         <QrCode size={18} weight="bold" />
@@ -27,10 +27,10 @@ export function CodeTypeSection({ codeMode, onChange }: CodeTypeSectionProps) {
       </button>
       <button
         onClick={() => onChange('barcode')}
-        className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+        className={`flex-1 flex items-center justify-center gap-2 px-3 py-3 rounded-lg text-sm font-semibold transition-all ${
           codeMode === 'barcode'
-            ? 'bg-[var(--accent)] text-white'
-            : 'bg-gray-100 dark:bg-gray-700 text-[var(--text-secondary)] hover:bg-gray-200 dark:hover:bg-gray-600'
+            ? 'bg-[var(--accent)] text-white shadow-sm'
+            : 'text-[var(--text-secondary)] hover:bg-white/60 dark:hover:bg-gray-700'
         }`}
       >
         <Barcode size={18} weight="bold" />

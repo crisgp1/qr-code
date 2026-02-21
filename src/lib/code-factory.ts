@@ -20,7 +20,8 @@ export async function generateCodeDataURL(
 
   // QR mode
   const text = contentOverride ?? encodeContent(config.content);
-  const canvas = await generateQR(text, config.codeColor, config.codeBg, config.roundedCode);
+  const bg = config.transparentBg ? 'transparent' : config.codeBg;
+  const canvas = await generateQR(text, config.codeColor, bg, config.roundness, config.errorCorrection);
 
   if (logoImg) {
     overlayLogo(canvas, logoImg, config.logoSize, config.codeBg, config.logoBgWhite);

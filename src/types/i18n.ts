@@ -58,6 +58,8 @@ export interface Translations {
     wifiPassword: string;
     wifiEncryption: string;
     wifiHidden: string;
+    wifiEncNone: string;
+    autoFill: string;
     vcardFirstName: string;
     vcardLastName: string;
     vcardPhone: string;
@@ -80,11 +82,21 @@ export interface Translations {
     pageSize: string;
     customWidth: string;
     customHeight: string;
+    pageLetter: string;
+    pageA4: string;
+    pageA5: string;
+    pageCustom: string;
+    pixelSize: string;
   };
   text: {
     title: string;
     label: string;
     labelPlaceholder: string;
+    labelPosition: string;
+    labelBottom: string;
+    labelTop: string;
+    labelBoth: string;
+    labelAll: string;
     pageTitle: string;
     pageTitlePlaceholder: string;
     titleSizeLabel: string;
@@ -107,12 +119,18 @@ export interface Translations {
     code: string;
     codeBg: string;
     pageBg: string;
+    transparentBg: string;
   };
   style: {
     title: string;
     cutLines: string;
     pageNumbers: string;
-    rounded: string;
+    roundness: string;
+    errorCorrection: string;
+    ecL: string;
+    ecM: string;
+    ecQ: string;
+    ecH: string;
   };
   interleave: {
     title: string;
@@ -146,12 +164,16 @@ export interface Translations {
     singleQR: string;
     singlePNG: string;
     singleSVG: string;
+    filename: string;
   };
   view: {
     grid: string;
     singlePage: string;
+    singleCode: string;
     page: string;
     of: string;
+    downloadPNG: string;
+    downloadSVG: string;
   };
   save: {
     save: string;
@@ -159,6 +181,7 @@ export interface Translations {
     saved: string;
     loaded: string;
     noData: string;
+    reset: string;
   };
   theme: {
     light: string;

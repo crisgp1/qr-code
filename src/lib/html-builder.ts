@@ -28,6 +28,16 @@ export function buildPrintHTML(
   const dims = getPageDimensionsInches(config);
   const isInterleave = interleave.mode !== 'off' && codeDataURLs.length > 1;
 
+  const pos = config.labelPosition ?? 'bottom';
+  const showTop = config.label && (pos === 'top' || pos === 'both' || pos === 'all');
+  const showBottom = config.label && (pos === 'bottom' || pos === 'both' || pos === 'all');
+  const showSides = config.label && pos === 'all';
+
+  // When 'all' mode, cell uses a grid layout with side labels
+  const cellDisplay = showSides
+    ? 'display:grid;grid-template-columns:auto 1fr auto;grid-template-rows:1fr;align-items:center;justify-items:center;'
+    : 'display:flex;flex-direction:column;align-items:center;justify-content:center;';
+
   let html = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>
 *{margin:0;padding:0;box-sizing:border-box}
 @page{size:${pageCSS};margin:0}
@@ -36,9 +46,12 @@ body{font-family:${config.fontFamily}}
 .page:last-child{page-break-after:avoid}
 .title{text-align:center;font-weight:700;font-size:${config.titleSize}pt;margin-bottom:8px}
 .grid{display:grid;grid-template-columns:repeat(${config.cols},1fr);grid-template-rows:repeat(${config.rows},1fr);gap:${config.spacing}cm;height:calc(100% ${config.pageTitle ? `- ${config.titleSize * 1.5}pt - 8px` : ''} ${config.showPageNum ? '- 20px' : ''})}
-.cell{display:flex;flex-direction:column;align-items:center;justify-content:center;${config.cutLines ? 'border:1px dashed #ccc;' : ''}}
-.cell img{width:${config.codeSize}cm;height:${config.codeMode === 'barcode' ? config.codeSize * 0.5 : config.codeSize}cm;object-fit:contain;image-rendering:${config.codeMode === 'barcode' ? 'auto' : 'pixelated'};${config.roundedCode && config.codeMode !== 'barcode' ? `border-radius:${config.codeSize * 0.08}cm` : ''}}
-.lbl{font-size:${config.labelSize}pt;color:#333;margin-top:3px;text-align:center}
+.cell{${cellDisplay}${config.cutLines ? 'border:1px dashed #ccc;' : ''}}
+.cell img{width:${config.codeSize}cm;height:${config.codeMode === 'barcode' ? config.codeSize * 0.5 : config.codeSize}cm;object-fit:contain;image-rendering:${config.codeMode === 'barcode' ? 'auto' : 'pixelated'};${config.roundness > 0 && config.codeMode !== 'barcode' ? `border-radius:${config.codeSize * 0.08}cm` : ''}}
+.lbl{font-size:${config.labelSize}pt;color:#333;text-align:center}
+.lbl-side{font-size:${config.labelSize}pt;color:#333;writing-mode:vertical-rl;white-space:nowrap}
+.lbl-side-l{transform:rotate(180deg)}
+.center-col{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
 .pnum{position:absolute;bottom:${config.margin * 0.3}cm;width:100%;text-align:center;font-size:9pt;color:#999}
 </style></head><body>`;
 
@@ -54,8 +67,22 @@ body{font-family:${config.fontFamily}}
         const src = isInterleave
           ? codeDataURLs[globalIdx] ?? codeDataURLs[0]
           : codeDataURLs[0] ?? '';
-        html += `<img src="${src}"/>`;
-        if (config.label) html += `<div class="lbl">${config.label}</div>`;
+
+        if (showSides) {
+          // Grid layout: left-label | center-col | right-label
+          html += `<div class="lbl-side lbl-side-l">${config.label}</div>`;
+          html += '<div class="center-col">';
+          if (showTop) html += `<div class="lbl">${config.label}</div>`;
+          html += `<img src="${src}"/>`;
+          if (showBottom) html += `<div class="lbl">${config.label}</div>`;
+          html += '</div>';
+          html += `<div class="lbl-side">${config.label}</div>`;
+        } else {
+          // Simple column layout
+          if (showTop) html += `<div class="lbl">${config.label}</div>`;
+          html += `<img src="${src}"/>`;
+          if (showBottom) html += `<div class="lbl">${config.label}</div>`;
+        }
         globalIdx++;
       }
       html += '</div>';

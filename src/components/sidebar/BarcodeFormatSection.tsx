@@ -36,37 +36,39 @@ export function BarcodeFormatSection({ format, onChange }: BarcodeFormatSectionP
 
   return (
     <>
-      <div className="flex flex-col gap-1">
-        <div className="flex items-center gap-1.5">
-          <Field label={t.barcodeFormat.title}>
-            <Select
-              value={format}
-              options={formats.map((f) => ({ label: f.label, value: f.value }))}
-              onChange={(v) => onChange(v as BarcodeFormat)}
-            />
-          </Field>
+      <div className="flex flex-col gap-1.5">
+        <div className="flex items-end gap-2">
+          <div className="flex-1">
+            <Field label={t.barcodeFormat.title}>
+              <Select
+                value={format}
+                options={formats.map((f) => ({ label: f.label, value: f.value }))}
+                onChange={(v) => onChange(v as BarcodeFormat)}
+              />
+            </Field>
+          </div>
           <button
             onClick={() => setModalOpen(true)}
-            className="mt-4 p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            className="mb-0.5 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             title={t.barcodeFormat.learnMore}
           >
             <Info size={16} weight="bold" className="text-[var(--accent)]" />
           </button>
         </div>
-        <p className="text-[10px] text-[var(--text-muted)] leading-tight">
+        <p className="text-[11px] text-[var(--text-muted)] leading-relaxed">
           {hint}
         </p>
       </div>
 
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={t.barcodeFormat.title}>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2.5">
           {formats.map((f) => {
             const selected = f.value === format;
             return (
               <button
                 key={f.value}
                 onClick={() => { onChange(f.value); setModalOpen(false); }}
-                className={`text-left p-3 rounded-lg border transition-all ${
+                className={`text-left p-3.5 rounded-xl border transition-all ${
                   selected
                     ? 'border-[var(--accent)] bg-[var(--accent)]/5 ring-1 ring-[var(--accent)]'
                     : 'border-[var(--input-border)] bg-[var(--input-bg)] hover:border-[var(--accent)]/50 hover:bg-[var(--accent)]/[0.02]'

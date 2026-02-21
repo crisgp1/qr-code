@@ -8,7 +8,11 @@ export type PageSize = 'letter' | 'a4' | 'a5' | 'custom';
 
 export type InterleaveMode = 'off' | 'manual' | 'csv';
 
-export type ViewMode = 'grid' | 'single';
+export type ViewMode = 'grid' | 'single' | 'singleCode';
+
+export type ErrorCorrectionLevel = 'L' | 'M' | 'Q' | 'H';
+
+export type LabelPosition = 'bottom' | 'top' | 'both' | 'all';
 
 export interface WiFiConfig {
   ssid: string;
@@ -60,6 +64,7 @@ export interface AppConfig {
   margin: number;
   spacing: number;
   label: string;
+  labelPosition: LabelPosition;
   pageTitle: string;
   titleSize: number;
   labelSize: number;
@@ -69,7 +74,10 @@ export interface AppConfig {
   pageBg: string;
   cutLines: boolean;
   showPageNum: boolean;
-  roundedCode: boolean;
+  roundness: number;
+  errorCorrection: ErrorCorrectionLevel;
+  transparentBg: boolean;
+  outputFilename: string;
   logoSize: number;
   logoBgWhite: boolean;
   pageSize: PageSize;
@@ -135,6 +143,7 @@ export const defaultConfig: AppConfig = {
   margin: 1.5,
   spacing: 0,
   label: 'Scan here',
+  labelPosition: 'bottom',
   pageTitle: '',
   titleSize: 18,
   labelSize: 9,
@@ -144,7 +153,10 @@ export const defaultConfig: AppConfig = {
   pageBg: '#ffffff',
   cutLines: true,
   showPageNum: false,
-  roundedCode: false,
+  roundness: 0,
+  errorCorrection: 'H',
+  transparentBg: false,
+  outputFilename: 'QR_Template',
   logoSize: 25,
   logoBgWhite: true,
   pageSize: 'letter',

@@ -23,7 +23,7 @@ export function LayoutSection({
   const { t } = useI18n();
 
   return (
-    <div className="grid grid-cols-3 gap-2">
+    <div className="grid grid-cols-3 gap-3">
       <Field label={t.layout.totalCodes}>
         <NumberInput value={totalCodes} min={1} max={500} onChange={(v) => onTotalChange(Math.max(1, v))} />
       </Field>

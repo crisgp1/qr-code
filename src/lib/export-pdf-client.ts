@@ -48,12 +48,18 @@ export async function exportPDFClient(
 
   // Label space
   const hasLabel = !!config.label;
-  const labelHeightIn = hasLabel ? (config.labelSize / 72) * 1.8 : 0;
+  const singleLblH = hasLabel ? (config.labelSize / 72) * 1.8 : 0;
+  const pos = config.labelPosition ?? 'bottom';
+  const hasTop = hasLabel && (pos === 'top' || pos === 'both' || pos === 'all');
+  const hasBottom = hasLabel && (pos === 'bottom' || pos === 'both' || pos === 'all');
+  const hasSides = hasLabel && pos === 'all';
+  const vertLblH = (hasTop ? singleLblH : 0) + (hasBottom ? singleLblH : 0);
+  const sideLblW = hasSides ? singleLblH : 0;
 
-  // Image size — fit within cell leaving room for label
+  // Image size — fit within cell leaving room for labels
   const isBarcode = config.codeMode === 'barcode';
-  const maxImgW = cellW * 0.92;
-  const maxImgH = (cellH - labelHeightIn) * 0.92;
+  const maxImgW = (cellW - sideLblW * 2) * 0.92;
+  const maxImgH = (cellH - vertLblH) * 0.92;
   const imgSizeW = Math.min(codeSizeIn, maxImgW);
   const imgSizeH = isBarcode ? imgSizeW * 0.5 : Math.min(codeSizeIn, maxImgH, imgSizeW);
 
@@ -105,10 +111,11 @@ export async function exportPDFClient(
 
       if (!dataURL) continue;
 
-      // Center image in cell (above label)
-      const availH = cellH - labelHeightIn;
-      const imgX = cellX + (cellW - imgSizeW) / 2;
-      const imgY = cellY + (availH - imgSizeH) / 2;
+      // Center image in cell accounting for labels on all sides
+      const topOffset = hasTop ? singleLblH : 0;
+      const availH = cellH - vertLblH;
+      const imgX = cellX + sideLblW + (cellW - sideLblW * 2 - imgSizeW) / 2;
+      const imgY = cellY + topOffset + (availH - imgSizeH) / 2;
 
       try {
         pdf.addImage(dataURL, 'PNG', imgX, imgY, imgSizeW, imgSizeH);
@@ -116,14 +123,35 @@ export async function exportPDFClient(
         // skip unrenderable images
       }
 
-      // Label
+      // Labels
       if (hasLabel) {
         pdf.setFont('helvetica', 'normal');
         pdf.setFontSize(config.labelSize);
         pdf.setTextColor('#333333');
-        pdf.text(config.label, cellX + cellW / 2, cellY + availH + labelHeightIn * 0.65, {
-          align: 'center',
-        });
+
+        if (hasTop) {
+          pdf.text(config.label, cellX + cellW / 2, cellY + singleLblH * 0.65, {
+            align: 'center',
+          });
+        }
+        if (hasBottom) {
+          pdf.text(config.label, cellX + cellW / 2, cellY + cellH - singleLblH * 0.25, {
+            align: 'center',
+          });
+        }
+        if (hasSides) {
+          const centerY = cellY + cellH / 2;
+          // Left label (rotated 90° CCW)
+          pdf.text(config.label, cellX + singleLblH * 0.65, centerY, {
+            align: 'center',
+            angle: 90,
+          });
+          // Right label (rotated 90° CW)
+          pdf.text(config.label, cellX + cellW - singleLblH * 0.25, centerY, {
+            align: 'center',
+            angle: -90,
+          });
+        }
       }
     }
 
@@ -144,5 +172,6 @@ export async function exportPDFClient(
     pdf.setLineDashPattern([], 0);
   }
 
-  pdf.save('QR_Template.pdf');
+  const filename = config.outputFilename || 'QR_Template';
+  pdf.save(`${filename}.pdf`);
 }

@@ -27,7 +27,7 @@ export function Button({
 }: ButtonProps) {
   return (
     <button
-      className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all active:scale-[0.97] disabled:opacity-50 ${variants[variant]} ${className}`}
+      className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-[13px] font-semibold transition-all active:scale-[0.97] disabled:opacity-50 shadow-sm ${variants[variant]} ${className}`}
       {...props}
     >
       {icon}

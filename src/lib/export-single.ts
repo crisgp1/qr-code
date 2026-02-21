@@ -16,13 +16,15 @@ export async function exportSinglePNG(content: string, config: AppConfig): Promi
       height: 200,
     });
   } else {
-    dataURL = await generateQRDataURL(content, config.codeColor, config.codeBg);
+    const bg = config.transparentBg ? 'transparent' : config.codeBg;
+    dataURL = await generateQRDataURL(content, config.codeColor, bg, config.errorCorrection);
   }
 
   // Convert data URL to blob
   const res = await fetch(dataURL);
   const blob = await res.blob();
-  downloadBlob(blob, `code_hires.png`);
+  const filename = config.outputFilename || 'code_hires';
+  downloadBlob(blob, `${filename}.png`);
 }
 
 export async function exportSingleSVG(content: string, config: AppConfig): Promise<void> {
@@ -36,9 +38,11 @@ export async function exportSingleSVG(content: string, config: AppConfig): Promi
       background: config.codeBg,
     });
   } else {
-    svg = await generateQRSVG(content, config.codeColor, config.codeBg);
+    const bg = config.transparentBg ? 'transparent' : config.codeBg;
+    svg = await generateQRSVG(content, config.codeColor, bg, config.errorCorrection);
   }
 
   const blob = new Blob([svg], { type: 'image/svg+xml' });
-  downloadBlob(blob, `code.svg`);
+  const filename = config.outputFilename || 'code';
+  downloadBlob(blob, `${filename}.svg`);
 }

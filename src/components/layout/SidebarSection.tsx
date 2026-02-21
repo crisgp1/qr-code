@@ -14,21 +14,31 @@ export function SidebarSection({ icon: Icon, title, children, defaultOpen = true
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <div>
+    <div className="rounded-xl bg-[var(--input-bg)]/60 dark:bg-white/[0.03] border border-[var(--sidebar-border)]/50">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-2 pt-3 pb-1 w-full border-t border-gray-100 dark:border-gray-700 first:border-0 first:pt-0"
+        className="flex items-center gap-2.5 w-full px-3.5 py-3 hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors rounded-xl"
       >
-        <Icon size={14} weight="bold" className="text-[var(--accent)]" />
-        <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--accent)] flex-1 text-left">
+        <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-[var(--accent)]/10">
+          <Icon size={15} weight="bold" className="text-[var(--accent)]" />
+        </div>
+        <span className="text-[12px] font-bold uppercase tracking-wider text-[var(--text-secondary)] flex-1 text-left">
           {title}
         </span>
         <CaretDown
-          size={12}
-          className={`text-[var(--text-muted)] transition-transform ${open ? '' : '-rotate-90'}`}
+          size={14}
+          className={`text-[var(--text-muted)] transition-transform duration-200 ${open ? '' : '-rotate-90'}`}
         />
       </button>
-      {open && <div className="flex flex-col gap-2 pt-1">{children}</div>}
+      <div
+        className={`grid transition-[grid-template-rows] duration-200 ease-out ${open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
+      >
+        <div className="overflow-hidden">
+          <div className="flex flex-col gap-3 px-3.5 pb-3.5 pt-1">
+            {children}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

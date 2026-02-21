@@ -1,5 +1,5 @@
 import QRCode from 'qrcode';
-import type { ContentConfig, WiFiConfig, VCardConfig, EmailConfig, SMSConfig } from '@/types/config';
+import type { ContentConfig, WiFiConfig, VCardConfig, EmailConfig, SMSConfig, ErrorCorrectionLevel } from '@/types/config';
 import { QR_SIZE } from './constants';
 
 function encodeWiFi(wifi: WiFiConfig): string {
@@ -94,24 +94,27 @@ export async function generateQR(
   text: string,
   color: string,
   bg: string,
-  rounded = false,
+  roundness = 0,
+  errorCorrection: ErrorCorrectionLevel = 'H',
 ): Promise<HTMLCanvasElement> {
   const canvas = document.createElement('canvas');
 
-  if (!rounded) {
+  if (roundness === 0) {
+    const lightColor = bg === 'transparent' ? 'rgba(0,0,0,0)' : bg;
     await QRCode.toCanvas(canvas, text || ' ', {
       width: QR_SIZE,
-      errorCorrectionLevel: 'H',
-      color: { dark: color, light: bg },
+      errorCorrectionLevel: errorCorrection,
+      color: { dark: color, light: lightColor },
       margin: 1,
     });
     return canvas;
   }
 
   // --- Rounded QR: draw each module as a rounded dot ---
+  const factor = roundness / 100;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const qr = (QRCode as any).create(text || ' ', {
-    errorCorrectionLevel: 'H',
+    errorCorrectionLevel: errorCorrection,
   });
 
   const moduleCount: number = qr.modules.size;
@@ -125,14 +128,18 @@ export async function generateQR(
   const ctx = canvas.getContext('2d')!;
 
   // Background
-  ctx.fillStyle = bg;
-  ctx.fillRect(0, 0, QR_SIZE, QR_SIZE);
+  if (bg === 'transparent') {
+    ctx.clearRect(0, 0, QR_SIZE, QR_SIZE);
+  } else {
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, QR_SIZE, QR_SIZE);
+  }
 
   // Rounded modules
   ctx.fillStyle = color;
-  const gap = modPx * 0.12;
+  const gap = modPx * 0.12 * factor;
   const dotSize = modPx - gap;
-  const r = dotSize * 0.35;
+  const r = dotSize * 0.45 * factor;
 
   for (let row = 0; row < moduleCount; row++) {
     for (let col = 0; col < moduleCount; col++) {
@@ -152,8 +159,9 @@ export async function generateQRDataURL(
   text: string,
   color: string,
   bg: string,
+  errorCorrection: ErrorCorrectionLevel = 'H',
 ): Promise<string> {
-  const canvas = await generateQR(text, color, bg);
+  const canvas = await generateQR(text, color, bg, 0, errorCorrection);
   return canvas.toDataURL('image/png');
 }
 
@@ -161,10 +169,11 @@ export async function generateQRSVG(
   text: string,
   color: string,
   bg: string,
+  errorCorrection: ErrorCorrectionLevel = 'H',
 ): Promise<string> {
   return QRCode.toString(text || ' ', {
     type: 'svg',
-    errorCorrectionLevel: 'H',
+    errorCorrectionLevel: errorCorrection,
     color: { dark: color, light: bg },
     margin: 1,
   });

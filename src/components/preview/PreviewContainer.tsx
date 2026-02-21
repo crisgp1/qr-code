@@ -3,6 +3,7 @@
 import type { AppConfig, ViewMode } from '@/types/config';
 import { GridView } from './GridView';
 import { SinglePageView } from './SinglePageView';
+import { SingleCodeView } from './SingleCodeView';
 
 interface PreviewContainerProps {
   config: AppConfig;
@@ -12,6 +13,8 @@ interface PreviewContainerProps {
   currentPage: number;
   onPrev: () => void;
   onNext: () => void;
+  onDownloadPNG: () => void;
+  onDownloadSVG: () => void;
 }
 
 export function PreviewContainer({
@@ -22,7 +25,20 @@ export function PreviewContainer({
   currentPage,
   onPrev,
   onNext,
+  onDownloadPNG,
+  onDownloadSVG,
 }: PreviewContainerProps) {
+  if (viewMode === 'singleCode') {
+    return (
+      <SingleCodeView
+        config={config}
+        codeDataURL={codeDataURLs[0] ?? null}
+        onDownloadPNG={onDownloadPNG}
+        onDownloadSVG={onDownloadSVG}
+      />
+    );
+  }
+
   if (viewMode === 'single') {
     return (
       <SinglePageView

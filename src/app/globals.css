@@ -34,7 +34,7 @@ body {
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
-/* Scrollbar */
+/* Scrollbar — thinner for sidebar */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
@@ -42,16 +42,38 @@ body {
 .dark ::-webkit-scrollbar-thumb { background: #4b5563; }
 .dark ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
 
-/* Range input */
+.sidebar-scroll::-webkit-scrollbar { width: 4px; }
+.sidebar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+.dark .sidebar-scroll {
+  scrollbar-color: #4b5563 transparent;
+}
+
+/* Range input — filled track before thumb */
 input[type="range"] {
   -webkit-appearance: none;
   height: 6px;
   border-radius: 3px;
-  background: #e2e8f0;
+  background: linear-gradient(
+    to right,
+    var(--accent) 0%,
+    var(--accent) var(--range-pct, 50%),
+    #e2e8f0 var(--range-pct, 50%),
+    #e2e8f0 100%
+  );
   outline: none;
+  transition: background 0.1s;
 }
 .dark input[type="range"] {
-  background: #4b5563;
+  background: linear-gradient(
+    to right,
+    var(--accent) 0%,
+    var(--accent) var(--range-pct, 50%),
+    #4b5563 var(--range-pct, 50%),
+    #4b5563 100%
+  );
 }
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -60,14 +82,81 @@ input[type="range"]::-webkit-slider-thumb {
   border-radius: 50%;
   background: var(--accent);
   cursor: pointer;
-  border: 2px solid #fff;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  border: 2.5px solid #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+  transition: box-shadow 0.15s;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  box-shadow: 0 1px 6px rgba(0,0,0,0.25), 0 0 0 4px rgba(79, 70, 229, 0.12);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 2.5px solid #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+}
+input[type="range"]::-moz-range-progress {
+  background: var(--accent);
+  border-radius: 3px;
+  height: 6px;
+}
+input[type="range"]::-moz-range-track {
+  background: #e2e8f0;
+  border-radius: 3px;
+  height: 6px;
+}
+.dark input[type="range"]::-moz-range-track {
+  background: #4b5563;
 }
 
 /* Modal */
 @keyframes modalIn {
   from { opacity: 0; transform: scale(0.95) translateY(8px); }
   to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Popover animation */
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.95) translateY(-4px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Color swatch — checkerboard pattern for white/light color visibility */
+.color-swatch {
+  position: relative;
+  border: 2px solid rgba(0,0,0,0.12);
+  background:
+    linear-gradient(var(--swatch-color, #fff), var(--swatch-color, #fff)),
+    repeating-conic-gradient(#d1d5db 0% 25%, #fff 0% 50%) 0 0 / 10px 10px;
+}
+.dark .color-swatch {
+  border-color: rgba(255,255,255,0.15);
+  background:
+    linear-gradient(var(--swatch-color, #fff), var(--swatch-color, #fff)),
+    repeating-conic-gradient(#4b5563 0% 25%, #374151 0% 50%) 0 0 / 10px 10px;
+}
+
+/* react-colorful overrides */
+.react-colorful {
+  width: 100% !important;
+  height: 160px !important;
+  border-radius: 10px !important;
+}
+.react-colorful__saturation {
+  border-radius: 8px 8px 0 0 !important;
+}
+.react-colorful__hue {
+  height: 14px !important;
+  border-radius: 0 0 8px 8px !important;
+}
+.react-colorful__pointer {
+  width: 20px !important;
+  height: 20px !important;
+  border: 2.5px solid #fff !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3) !important;
 }
 
 /* Print */

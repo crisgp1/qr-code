@@ -20,5 +20,6 @@ export function exportWord(
     <body>${bodyContent}</body></html>`;
 
   const blob = new Blob(['\ufeff' + html], { type: 'application/msword' });
-  downloadBlob(blob, 'QR_Template.doc');
+  const filename = config.outputFilename || 'QR_Template';
+  downloadBlob(blob, `${filename}.doc`);
 }

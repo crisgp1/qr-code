@@ -52,10 +52,11 @@ export const PagePreview = React.memo(function PagePreview({
           key={i}
           dataURL={dataURL}
           label={hasCode ? config.label : ''}
+          labelPosition={config.labelPosition}
           labelSize={config.labelSize}
           fontFamily={config.fontFamily}
           maxQR={maxQR}
-          rounded={config.roundedCode}
+          rounded={config.roundness > 0}
           cutLines={config.cutLines}
           codeMode={config.codeMode}
         />,
@@ -64,8 +65,8 @@ export const PagePreview = React.memo(function PagePreview({
     return result;
   }, [
     gridW, gridH, spacingPx, config.cols, config.rows, config.label,
-    config.labelSize, config.fontFamily, config.roundedCode, config.cutLines,
-    config.codeMode, codeSizePx, perPage, startIndex, codeCount, codeDataURLs,
+    config.labelPosition, config.labelSize, config.fontFamily, config.roundness > 0,
+    config.cutLines, config.codeMode, codeSizePx, perPage, startIndex, codeCount, codeDataURLs,
   ]);
 
   return (
