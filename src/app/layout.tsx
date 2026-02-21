@@ -1,16 +1,17 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { Providers } from './providers';
 
 export const metadata: Metadata = {
-  title: 'Generador de QR',
-  description: 'Genera plantillas de QR codes para imprimir en hoja carta',
+  title: 'QR & Barcode Generator | cgarper.dev',
+  description: 'Free QR code and barcode generator. Create print-ready templates with custom layouts, logos, and multiple export formats.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es">
-      <body className="bg-gray-100 text-gray-900 antialiased">
-        {children}
+    <html lang="en" suppressHydrationWarning>
+      <body className="bg-[var(--surface)] text-[var(--text-primary)] antialiased">
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

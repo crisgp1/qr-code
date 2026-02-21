@@ -1,5 +1,5 @@
-import QRGenerator from '@/components/QRGenerator';
+import { AppShell } from '@/components/layout/AppShell';
 
 export default function Home() {
-  return <QRGenerator />;
+  return <AppShell />;
 }

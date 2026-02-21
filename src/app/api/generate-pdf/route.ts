@@ -48,7 +48,7 @@ async function getBrowser(): Promise<Browser> {
 
 export async function POST(req: NextRequest) {
   try {
-    const { html } = await req.json();
+    const { html, pageSize } = await req.json();
     if (!html) {
       return NextResponse.json({ error: 'No HTML provided' }, { status: 400 });
     }
@@ -59,11 +59,20 @@ export async function POST(req: NextRequest) {
     await page.setContent(html, { waitUntil: 'networkidle0', timeout: 15000 });
     await page.emulateMediaType('print');
 
-    const pdf = await page.pdf({
-      format: 'letter',
+    const pdfOptions: Parameters<typeof page.pdf>[0] = {
       printBackground: true,
       margin: { top: 0, right: 0, bottom: 0, left: 0 },
-    });
+    };
+
+    // Support custom page sizes
+    if (pageSize && pageSize.width && pageSize.height) {
+      pdfOptions.width = `${pageSize.width}in`;
+      pdfOptions.height = `${pageSize.height}in`;
+    } else {
+      pdfOptions.format = 'letter';
+    }
+
+    const pdf = await page.pdf(pdfOptions);
 
     await page.close();
 
@@ -75,14 +84,14 @@ export async function POST(req: NextRequest) {
     return new NextResponse(Buffer.from(pdf), {
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': 'attachment; filename="QR_Plantilla.pdf"',
+        'Content-Disposition': 'attachment; filename="QR_Template.pdf"',
       },
     });
   } catch (error) {
     console.error('PDF generation error:', error);
     return NextResponse.json(
       { error: 'Failed to generate PDF' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
