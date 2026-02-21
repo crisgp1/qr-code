@@ -1,0 +1,29 @@
+{
+  "name": "generador-qr",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "^15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "qrcode": "^1.5.4",
+    "@phosphor-icons/react": "^2.1.7",
+    "puppeteer-core": "^23.9.0",
+    "@sparticuz/chromium": "^131.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/qrcode": "^1.5.5",
+    "tailwindcss": "^3.4.0",
+    "postcss": "^8.4.0",
+    "autoprefixer": "^10.4.0"
+  }
+}

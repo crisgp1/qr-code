@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+/* Range input */
+input[type="range"] {
+  -webkit-appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: #e2e8f0;
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #4f46e5;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* Print */
+@media print {
+  body { background: #fff !important; }
+  .no-print { display: none !important; }
+  .print-area {
+    padding: 0 !important;
+    overflow: visible !important;
+    background: #fff !important;
+  }
+  .page-preview {
+    box-shadow: none !important;
+    margin: 0 !important;
+  }
+  .page-wrapper {
+    page-break-after: always;
+    break-after: page;
+  }
+  .page-wrapper:last-child {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+}
