@@ -165,6 +165,8 @@ export interface Translations {
     singlePNG: string;
     singleSVG: string;
     filename: string;
+    zip: string;
+    zipProgress: string;
   };
   view: {
     grid: string;

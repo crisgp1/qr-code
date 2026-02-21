@@ -86,6 +86,9 @@ interface SidebarProps {
   onPNG: () => void;
   onSinglePNG: () => void;
   onSingleSVG: () => void;
+  onZIP: () => void;
+  zipLoading: boolean;
+  zipProgress: string | null;
   onSave: () => void;
   onLoad: () => void;
   onReset: () => void;
@@ -111,6 +114,9 @@ export function Sidebar({
   onPNG,
   onSinglePNG,
   onSingleSVG,
+  onZIP,
+  zipLoading,
+  zipProgress,
   onSave,
   onLoad,
   onReset,
@@ -375,6 +381,9 @@ export function Sidebar({
             onPNG={onPNG}
             onSinglePNG={onSinglePNG}
             onSingleSVG={onSingleSVG}
+            onZIP={onZIP}
+            zipLoading={zipLoading}
+            zipProgress={zipProgress}
           />
         </div>
 

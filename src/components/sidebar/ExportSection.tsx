@@ -1,6 +1,6 @@
 'use client';
 
-import { FilePdf, FileImage, Download } from '@phosphor-icons/react';
+import { FilePdf, FileImage, Download, FileZip } from '@phosphor-icons/react';
 import { useI18n } from '@/i18n';
 import { Button, Spinner, Field, TextInput } from '../shared';
 
@@ -12,6 +12,9 @@ interface ExportSectionProps {
   onPNG: () => void;
   onSinglePNG: () => void;
   onSingleSVG: () => void;
+  onZIP: () => void;
+  zipLoading: boolean;
+  zipProgress: string | null;
 }
 
 export function ExportSection({
@@ -22,6 +25,9 @@ export function ExportSection({
   onPNG,
   onSinglePNG,
   onSingleSVG,
+  onZIP,
+  zipLoading,
+  zipProgress,
 }: ExportSectionProps) {
   const { t } = useI18n();
 
@@ -42,6 +48,15 @@ export function ExportSection({
         className="w-full"
       >
         {t.export.pdf}
+      </Button>
+      <Button
+        variant="primary"
+        onClick={onZIP}
+        disabled={zipLoading}
+        icon={zipLoading ? <Spinner size={16} /> : <FileZip size={16} weight="bold" />}
+        className="w-full !bg-emerald-600 hover:!bg-emerald-700"
+      >
+        {zipLoading && zipProgress ? zipProgress : t.export.zip}
       </Button>
       <div className="grid grid-cols-3 gap-2">
         <Button variant="warning" onClick={onPNG} icon={<FileImage size={16} weight="bold" />}>

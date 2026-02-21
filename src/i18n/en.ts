@@ -167,6 +167,8 @@ export const en: Translations = {
     singlePNG: 'Hi-Res PNG',
     singleSVG: 'SVG',
     filename: 'File name',
+    zip: 'ZIP (Bulk)',
+    zipProgress: '{done}/{total}',
   },
   view: {
     grid: 'Grid',

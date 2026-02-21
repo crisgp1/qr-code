@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useRef } from 'react';
 import type { AppConfig } from '@/types/config';
 import { useConfig } from '@/hooks/useConfig';
 import { useTheme } from '@/hooks/useTheme';
@@ -13,6 +13,7 @@ import { useExport } from '@/hooks/useExport';
 import { getPagesData, getNumPages } from '@/lib/page-calculator';
 import { exportPNG } from '@/lib/export-png';
 import { exportSinglePNG, exportSingleSVG } from '@/lib/export-single';
+import { exportBulkZIP } from '@/lib/export-zip';
 import { encodeContent } from '@/lib/qr-engine';
 import { Sidebar } from './Sidebar';
 import { MainPreview } from './MainPreview';
@@ -57,6 +58,9 @@ export function AppShell() {
   const { pdfLoading, exportPDF } = useExport();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [zipLoading, setZipLoading] = useState(false);
+  const [zipProgress, setZipProgress] = useState<string | null>(null);
+  const zipAbort = useRef(false);
 
   const handlePDF = useCallback(() => {
     exportPDF(effectiveConfig, codeDataURLs, interleave);
@@ -73,6 +77,21 @@ export function AppShell() {
   const handleSingleSVG = useCallback(() => {
     exportSingleSVG(encodedContent, effectiveConfig);
   }, [encodedContent, effectiveConfig]);
+
+  const handleZIP = useCallback(async () => {
+    if (zipLoading) return;
+    setZipLoading(true);
+    setZipProgress(null);
+    zipAbort.current = false;
+    try {
+      await exportBulkZIP(effectiveConfig, interleave, (done, total) => {
+        setZipProgress(`${done}/${total}`);
+      });
+    } finally {
+      setZipLoading(false);
+      setZipProgress(null);
+    }
+  }, [effectiveConfig, interleave, zipLoading]);
 
   const handleSave = useCallback(() => {
     save(config);
@@ -104,6 +123,9 @@ export function AppShell() {
         onPNG={handlePNG}
         onSinglePNG={handleSinglePNG}
         onSingleSVG={handleSingleSVG}
+        onZIP={handleZIP}
+        zipLoading={zipLoading}
+        zipProgress={zipProgress}
         onSave={handleSave}
         onLoad={load}
         onReset={handleReset}
